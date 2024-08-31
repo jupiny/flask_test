@@ -5,12 +5,15 @@ services:
       context: .
       dockerfile: Dockerfile
     links:
-      - db 
+      - db
     ports:
       - "6789:6789"
     container_name: app
+#    depends_on:
+#      - db
     depends_on:
-      - db
+      db:
+        condition: service_healthy
   db:
     image: mysql:8.0
     container_name: mysql-server
@@ -18,6 +21,12 @@ services:
       - "3306:3306"
     environment:
       MYSQL_ROOT_PASSWORD: root123
+    healthcheck:
+      interval: 5s
+      timeout: 1s
+      retries: 10 
+      start_period: 2s
+      test: ["CMD", 'mysqladmin', 'ping', '-h', 'localhost']
     command:
       - --character-set-server=utf8mb4
       - --collation-server=utf8mb4_unicode_ci
