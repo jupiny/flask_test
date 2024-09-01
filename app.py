@@ -45,13 +45,21 @@ def hello():
     return 'Hello Flask World'
 
 
+@app.route('/items:create')
+def create_item():
+    cursor = mysql.cursor()
+    sql = "INSERT INTO items(name, description) VALUES ('doyeon', 'i love you');"
+    cursor.execute(sql)
+    results = cursor.fetchall()
+    return jsonify(results)
+
+
 @app.route('/items')
 def get_items():
     cursor = mysql.cursor()
     sql = "SELECT * FROM items"
     cursor.execute(sql)
     results = cursor.fetchall()
-    print(results)
     return jsonify(results)
 
     
